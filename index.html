@@ -48,7 +48,7 @@
     top: 0;
     display: flex;
     justify-content: center;
-    flex-wrap: wrap; /* Allows wrapping on small screens */
+    flex-wrap: wrap; 
     gap: 10px;
     padding: clamp(10px, 3vw, 20px);
     background: rgba(0, 8, 20, 0.95);
@@ -69,7 +69,7 @@
     cursor: pointer;
     transition: 0.3s;
     font-size: clamp(0.7rem, 2vw, 0.9rem);
-    flex-grow: 1; /* Helps fill space on mobile */
+    flex-grow: 1; 
     max-width: 200px;
   }
   nav button:hover, nav button.active {
@@ -105,7 +105,7 @@
   #radarIntro.hide { opacity: 0; pointer-events: none; transition: 1s; }
 
   #radarCanvas {
-    width: 80vmin; /* Scales based on smallest dimension */
+    width: 80vmin; 
     height: 80vmin;
     max-width: 500px;
     max-height: 500px;
@@ -121,6 +121,16 @@
     display: flex;
     background: #000;
     transition: opacity 1.2s ease, filter 1.2s ease;
+  }
+
+  /* GRAY OVERLAY FOR BETTER CONTRAST */
+  .radar-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 8, 20, 0.5); 
+    z-index: 1550;
+    backdrop-filter: blur(1.5px);
+    pointer-events: none;
   }
 
   #entryLogo {
@@ -189,8 +199,8 @@
     display: none;
     width: 92%;
     max-width: 1100px;
-    margin: clamp(100px, 15vh, 160px) auto 40px; 
-    padding: clamp(20px, 5vw, 50px);
+    margin: clamp(120px, 18vh, 180px) auto 40px; 
+    padding: clamp(25px, 5vw, 55px);
     background: rgba(2, 62, 138, 0.15);
     backdrop-filter: blur(15px);
     border: 1px solid rgba(0, 180, 216, 0.4);
@@ -203,12 +213,14 @@
   @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
   .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; margin-top: 30px; }
+  .grid-item { text-align: center; }
   .grid img { width: 100%; height: 250px; object-fit: cover; border: 1px solid #00b4d8; cursor: pointer; transition: 0.3s; }
   .grid img:hover { transform: scale(1.03); box-shadow: 0 0 20px #00b4d8; }
+  .grid p { margin-top: 10px; font-family: 'Orbitron'; color: #00b4d8; font-size: 0.85rem; }
 
   /* Table Scaling */
   .table-scroll { width: 100%; overflow-x: auto; margin-top: 20px; }
-  table { width: 100%; border-collapse: collapse; min-width: 600px; }
+  table { width: 100%; border-collapse: collapse; min-width: 650px; }
   th, td { padding: 15px; text-align: left; border-bottom: 1px solid rgba(0, 180, 216, 0.2); }
   th { color: #00b4d8; text-transform: uppercase; background: rgba(0, 180, 216, 0.1); }
 
@@ -280,10 +292,10 @@
   <p style="font-size: 1.1rem; margin-bottom: 20px;">Radar is a system typically consisting of a synchronized radio transmitter and receiver that emits radio waves and processes their reflections for display. Its primary function is to detect and locate objects such as aircraft.</p>
   
   <div class="grid">
-    <img src="images/radar 1.jpg" onclick="zoomImage(this.src, 'Military Surveillance')">
-    <img src="images/radar 2.jpg" onclick="zoomImage(this.src, 'Parabolic antenna')">
-    <img src="images/radar 3.jpg" onclick="zoomImage(this.src, 'Radar Station')">
-    <img src="images/radar 4.jpg" onclick="zoomImage(this.src, 'Malargüe Station')">
+    <div class="grid-item"><img src="images/radar 1.jpg" onclick="zoomImage(this.src, 'Military Surveillance')"><p>Pulse Emission</p></div>
+    <div class="grid-item"><img src="images/radar 2.jpg" onclick="zoomImage(this.src, 'Parabolic antenna')"><p>Reflector Unit</p></div>
+    <div class="grid-item"><img src="images/radar 3.jpg" onclick="zoomImage(this.src, 'Radar Station')"><p>Target Lock</p></div>
+    <div class="grid-item"><img src="images/radar 4.jpg" onclick="zoomImage(this.src, 'Malargüe Station')"><p>Terminal View</p></div>
   </div>
 </section>
 
@@ -296,10 +308,10 @@
 
 <section id="p4">
   <h2>Purpose and Placement Summary</h2>
-  <ul style="margin-left: 20px;">
-    <li><strong>Safety & Separation:</strong> PSR calculates range and bearing to maintain safe separation.</li>
-    <li><strong>Weather Detection:</strong> Modern systems track precipitation to help pilots navigate around hazardous weather.</li>
-    <li><strong>Visibility:</strong> These systems are located on tall towers at airports to ensure an unobstructed line of sight.</li>
+  <ul style="margin-left: 20px; font-size: 1.1rem;">
+    <li style="margin-bottom: 15px;"><strong>Safety & Separation:</strong> PSR calculates range and bearing to maintain safe separation and triggers ground-based conflict alerts.</li>
+    <li style="margin-bottom: 15px;"><strong>Weather Detection:</strong> Modern systems track precipitation to help pilots navigate around hazardous weather.</li>
+    <li style="margin-bottom: 15px;"><strong>Visibility:</strong> These systems are located on tall towers at airports to ensure an unobstructed line of sight.</li>
     <li><strong>Digital Display:</strong> Data is displayed on STARS consoles within TRACON facilities.</li>
   </ul>
 </section>
