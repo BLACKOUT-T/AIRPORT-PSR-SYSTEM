@@ -2,18 +2,12 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Airport Primary Surveillance Radar | CAET 2D</title>
 <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   /* Global UI Reset */
-  *{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    user-select: none; 
-    -webkit-user-select: none;
-  }
+  *{ margin:0; padding:0; box-sizing:border-box; user-select: none; -webkit-user-select: none; }
 
   body{
     font-family: 'Roboto Mono', monospace;
@@ -27,7 +21,7 @@
     min-height: 100vh;
   }
 
-  /* RESPONSIVE NAV BAR - Auto-sizing height */
+  /* RESPONSIVE NAV BAR - Adjusts for any device */
   nav{
     position: fixed;
     width: 100%;
@@ -55,73 +49,53 @@
     cursor: pointer;
     font-size: clamp(0.7rem, 2vw, 0.9rem);
     transition: 0.3s;
-    min-width: 100px;
+    flex-grow: 1;
+    max-width: 180px;
   }
-  nav button:hover, nav button.active {
-    background: #00b4d8;
-    color: #03045e;
-    box-shadow: 0 0 15px #00b4d8;
-  }
+  nav button:hover, nav button.active { background: #00b4d8; color: #03045e; box-shadow: 0 0 15px #00b4d8; }
 
-  /* FRONT COVER LOGIC */
-  #frontImage {
+  /* BOOTING RADAR PAGE */
+  #radarIntro {
     position: fixed;
     inset: 0;
-    z-index: 1500;
-    cursor: pointer;
+    background: #000814;
     display: flex;
-    background: #000;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 2000;
+    padding: 20px;
   }
+  #radarIntro.hide { opacity: 0; pointer-events: none; transition: 1s; }
+  #radarCanvas { width: 70vmin; height: 70vmin; max-width: 500px; max-height: 500px; }
 
+  /* FRONT COVER LOGIC */
+  #frontImage { position: fixed; inset: 0; z-index: 1500; cursor: pointer; display: flex; background: #000; }
   #entryLogo {
-    position: absolute;
-    top: 20px;
-    left: 20px;
-    width: 20vw;
-    min-width: 120px;
-    max-width: 300px;
-    height: auto;
-    object-fit: contain; 
-    z-index: 1700;
-    background: rgba(0, 8, 20, 0.4); 
-    backdrop-filter: blur(10px);
-    padding: 10px;
-    border-radius: 8px;
-    border: 1px solid rgba(0, 180, 216, 0.3);
+    position: absolute; top: 20px; left: 20px; width: 30vw; min-width: 150px; max-width: 350px;
+    height: auto; object-fit: contain; z-index: 1700; background: rgba(0, 8, 20, 0.4); 
+    backdrop-filter: blur(10px); padding: 15px; border-radius: 10px; border: 1px solid rgba(0, 180, 216, 0.3);
   }
-
-  .image-half {
-    width: 50%; height: 100%; overflow: hidden; position: relative;
-    transition: transform 1.2s cubic-bezier(0.77, 0, 0.175, 1);
-  }
+  .image-half { width: 50%; height: 100%; overflow: hidden; position: relative; transition: 1s; }
   .image-half img:not(#entryLogo) { position: absolute; height: 100%; width: 200%; object-fit: cover; }
   #leftHalf img:last-child { left: 0; }
   #rightHalf img:last-child { right: 0; }
-
-  #frontImage.zoomed { opacity: 0; pointer-events: none; }
+  #frontImage.zoomed { opacity: 0; pointer-events: none; filter: blur(10px); }
 
   #frontTitle {
-    position: absolute;
-    z-index: 1600;
-    width: 90%;
-    font-size: clamp(1.5rem, 6vw, 4.5rem);
-    color: #90e0ef;
-    text-align: center;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    font-family: 'Orbitron';
-    font-weight: 800;
-    letter-spacing: clamp(2px, 1.5vw, 10px);
+    position: absolute; z-index: 1600; width: 90%; text-align: center; top: 50%; left: 50%;
+    transform: translate(-50%, -50%); font-family: 'Orbitron'; font-weight: 800;
+    color: #90e0ef; font-size: clamp(1.5rem, 8vw, 4.5rem); letter-spacing: clamp(2px, 2vw, 10px);
   }
+  #frontTitle.zoom-out { transform: translate(-50%, -50%) scale(8); opacity: 0; }
 
-  /* ADJUSTED CONTENT BOXES - Dynamic top margin to clear Nav */
+  /* UNIFORM RESPONSIVE TEXTBOXES */
   section {
     display: none;
-    width: 92%;
+    width: 90%;
     max-width: 1000px;
-    margin: 160px auto 40px; /* Large top margin ensures no shadow from Nav */
-    padding: clamp(20px, 4vw, 50px);
+    margin: 140px auto 40px; /* Clears Nav Bar */
+    padding: clamp(20px, 5vw, 50px);
     background: rgba(2, 62, 138, 0.15);
     backdrop-filter: blur(15px);
     border: 1px solid rgba(0, 180, 216, 0.4);
@@ -129,51 +103,30 @@
   }
   section.active { display: block; animation: fadeIn 0.8s ease; }
 
-  /* FIXED EXAMPLE IMAGES */
-  .example-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    margin-top: 20px;
-  }
-  .example-item {
-    display: grid;
-    grid-template-columns: clamp(150px, 30%, 300px) 1fr;
-    gap: 20px;
-    align-items: center;
-    background: rgba(0, 180, 216, 0.05);
-    padding: 15px;
-    border-radius: 8px;
-    border: 1px solid rgba(0, 180, 216, 0.2);
-  }
-  .example-item img {
-    width: 100%;
-    aspect-ratio: 16/9;
-    object-fit: cover;
-    border: 1px solid #00b4d8;
-    cursor: pointer;
-  }
+  h2 { font-family: 'Orbitron'; font-size: clamp(1.2rem, 4vw, 2.2rem); color: #00b4d8; margin-bottom: 20px; }
 
+  /* GRID RESTORED FOR "WHAT IS RADAR" */
   .grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-    gap: 15px;
-    margin-top: 20px;
+    gap: 20px;
+    margin-top: 30px;
   }
+  .grid-item { text-align: center; }
   .grid img { width: 100%; height: 200px; object-fit: cover; border: 1px solid #00b4d8; cursor: pointer; }
+  .grid p { margin-top: 10px; font-size: 0.9rem; color: #00b4d8; font-family: 'Orbitron'; }
 
-  /* Media query for very small phones */
-  @media (max-width: 500px) {
-    .example-item { grid-template-columns: 1fr; text-align: center; }
-    section { margin-top: 180px; }
-  }
+  /* TABLE & EXAMPLES RESTORED */
+  .table-scroll { width: 100%; overflow-x: auto; margin-top: 20px; }
+  table { width: 100%; border-collapse: collapse; min-width: 600px; }
+  th, td { padding: 15px; text-align: left; border-bottom: 1px solid rgba(0, 180, 216, 0.2); }
 
-  @keyframes fadeIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 </head>
 <body>
 
-<div id="imageOverlay" style="position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:4000; display:none; justify-content:center; align-items:center;" onclick="this.style.display='none'">
+<div id="imageOverlay" style="position:fixed; inset:0; background:rgba(0,0,0,0.9); z-index:3000; display:none; justify-content:center; align-items:center;" onclick="this.style.display='none'">
   <img id="overlayImg" src="" style="max-width:90%; max-height:80%; border:2px solid #00b4d8;">
 </div>
 
@@ -184,6 +137,12 @@
   <button onclick="showPage('p4')">PURPOSE</button>
   <button onclick="showPage('p5')">EXAMPLES</button>
 </nav>
+
+<div id="radarIntro">
+  <h1 style="font-family: 'Orbitron'; margin-bottom: 15px; font-size: clamp(1rem, 5vw, 2rem);">SYSTEM BOOT: PSR-OS</h1>
+  <canvas id="radarCanvas" width="500" height="500" onclick="showPage('p6')" style="cursor:pointer;"></canvas>
+  <p style="letter-spacing: 5px; color:#48cae4; font-family: 'Orbitron'; margin-top: 15px; font-size: 0.8rem;">INITIALIZING: CAET 2D</p>
+</div>
 
 <div id="frontImage" onclick="handleStart()">
   <div class="image-half" id="leftHalf">
@@ -210,48 +169,82 @@
 
 <section id="p2">
   <h2>What is RADAR?</h2>
-  <p>Radar is a system typically consisting of a synchronized radio transmitter and receiver that emits radio waves to detect objects.</p>
-  
+  <p>Radar emits radio waves to detect and locate objects by processing reflected electromagnetic energy.</p>
   <div class="grid">
-    <img src="images/radar 1.jpg" onclick="zoomImage(this.src)">
-    <img src="images/radar 2.jpg" onclick="zoomImage(this.src)">
+    <div class="grid-item"><img src="images/radar 1.jpg" onclick="zoomImage(this.src)"><p>Pulse Emission</p></div>
+    <div class="grid-item"><img src="images/radar 2.jpg" onclick="zoomImage(this.src)"><p>Reflector Unit</p></div>
+    <div class="grid-item"><img src="images/radar 3.jpg" onclick="zoomImage(this.src)"><p>Target Lock</p></div>
+    <div class="grid-item"><img src="images/radar 4.jpg" onclick="zoomImage(this.src)"><p>Station View</p></div>
   </div>
 </section>
 
 <section id="p3">
-  <h2>Airport PSR</h2>
-  <p>The Primary Surveillance Radar (PSR) determines aircraft positions by utilizing reflected electromagnetic energy. It acts as a non-cooperative sensor, processing microwave "echoes" that bounce off the aircraft's surface.</p>
-  
+  <h2>Airport Primary Surveillance Radar (PSR)</h2>
+  <p>The PSR is a ground-based radiolocation system used within terminal areas. As a non-cooperative sensor, it detects aircraft independently by processing microwave "echoes" that bounce off the surface.</p>
+</section>
+
+<section id="p4">
+  <h2>Purpose and Safety</h2>
+  <ul style="margin-left: 20px;">
+    <li><strong>Safety & Separation:</strong> PSR calculates range and bearing to maintain safe aircraft separation.</li>
+    <li><strong>Weather Detection:</strong> Tracks precipitation levels to help pilots navigate around hazards.</li>
+    <li><strong>Digital Display:</strong> Data is relayed to STARS consoles in air traffic towers.</li>
+  </ul>
 </section>
 
 <section id="p5">
   <h2>Radar Examples</h2>
-  <div class="example-grid">
-    <div class="example-item">
-      <img src="images/ASR 9.jpg" onclick="zoomImage(this.src)">
-      <div>
-        <strong>ASR-9</strong><br>Standard for Major Hubs; first to show weather and aircraft on one screen.
-      </div>
-    </div>
-    <div class="example-item">
-      <img src="images/ASR 11.jpg" onclick="zoomImage(this.src)">
-      <div>
-        <strong>ASR-11</strong><br>Digital Standard; replaces analog systems at military airfields.
-      </div>
-    </div>
-    <div class="example-item">
-      <img src="images/STAR NG.jpg" onclick="zoomImage(this.src)">
-      <div>
-        <strong>STAR NG</strong><br>Global Leader; superior wind farm interference mitigation.
-      </div>
-    </div>
+  <div class="table-scroll">
+    <table>
+      <thead>
+        <tr><th>Model</th><th>Manufacturer</th><th>Primary Use Case</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>ASR-9</td><td>Northrop Grumman</td><td>Major Hub Standard</td></tr>
+        <tr><td>ASR-11</td><td>Raytheon / FAA</td><td>Modern Digital Standard</td></tr>
+        <tr><td>STAR NG</td><td>Thales Group</td><td>Superior Wind Farm Mitigation</td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section id="p6">
+  <h2>References</h2>
+  <div style="font-size: 0.8rem; line-height: 1.4;">
+    <p>Lanicci, J. M., & McCorrison, S. K. (2022). Weather-Ready Nation. <i>Journal of Geoscience Education</i>.</p>
+    <p>Merriam-Webster. (n.d.). Radar Dictionary.</p>
   </div>
 </section>
 
 <script>
+const canvas = document.getElementById('radarCanvas');
+const ctx = canvas.getContext('2d');
+let angle = 0;
+
+function drawRadar() {
+  const cx = 250, cy = 250, r = 230;
+  ctx.fillStyle = 'rgba(0, 8, 20, 0.1)';
+  ctx.fillRect(0, 0, 500, 500);
+  ctx.strokeStyle = 'rgba(2, 62, 138, 0.5)';
+  ctx.lineWidth = 1;
+  for(let i=1; i<=4; i++) { ctx.beginPath(); ctx.arc(cx, cy, (r/4)*i, 0, Math.PI*2); ctx.stroke(); }
+  ctx.save();
+  ctx.translate(cx, cy); ctx.rotate(angle);
+  let sweepGrad = ctx.createConicGradient(0, 0, 0);
+  sweepGrad.addColorStop(0, 'rgba(0, 180, 216, 0.9)'); 
+  sweepGrad.addColorStop(0.4, 'transparent'); 
+  ctx.fillStyle = sweepGrad;
+  ctx.beginPath(); ctx.moveTo(0,0); ctx.arc(0,0, r, 0, Math.PI/2); ctx.fill();
+  ctx.strokeStyle = '#90e0ef'; ctx.lineWidth = 3;
+  ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(r, 0); ctx.stroke();
+  ctx.restore();
+  angle -= 0.04; 
+  requestAnimationFrame(drawRadar);
+}
+
 function handleStart() {
   document.getElementById('frontImage').classList.add('zoomed');
-  document.getElementById('frontTitle').style.opacity = '0';
+  document.getElementById('frontTitle').classList.add('zoom-out');
   setTimeout(() => { 
     document.getElementById('frontImage').style.display = 'none'; 
     document.getElementById('frontTitle').style.display = 'none'; 
@@ -263,12 +256,15 @@ function showPage(id) {
   document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
   document.getElementById(id).classList.add('active');
   window.scrollTo({top: 0, behavior: 'smooth'});
+  if(id === 'p6') document.getElementById('radarIntro').classList.add('hide');
 }
 
 function zoomImage(src) {
   document.getElementById('overlayImg').src = src;
   document.getElementById('imageOverlay').style.display = 'flex';
 }
+
+window.onload = () => { drawRadar(); setTimeout(() => { document.getElementById('radarIntro').classList.add('hide'); }, 4000); };
 </script>
 </body>
 </html>
